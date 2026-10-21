@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="high-contrast">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Hear2Use</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       ARIA LIVE REGIONS
+  ════════════════════════════════════════════════ -->
+  <!-- polite: status updates (scan results, kitchen, places) -->
+  <div id="live-status" role="status" aria-live="polite" aria-atomic="true" class="visually-hidden"></div>
+  <!-- assertive: loading / errors -->
+  <div id="live-alert"  role="alert"  aria-live="assertive" aria-atomic="true" class="visually-hidden"></div>
+
+  <!-- ═══════════════════════════════════════════════
+       LOADING OVERLAY
+  ════════════════════════════════════════════════ -->
+  <div id="loading" aria-hidden="true" hidden>
+    <div class="loading-inner">
+      <div class="spinner" aria-hidden="true"></div>
+      <p id="loading-msg">Reading the label…</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       APP SHELL
+  ════════════════════════════════════════════════ -->
+  <div id="app">
+
+    <!-- ── Header ── -->
+    <header class="app-header" role="banner">
+      <span class="app-logo" aria-label="Hear2Use">Hear2Use</span>
+      <button id="repeat-btn" class="btn-icon" aria-label="Repeat last message">
+        🔊 <span class="btn-label">Repeat</span>
+      </button>
+    </header>
+
+    <!-- ── Last message bar ── -->
+    <div id="last-msg-bar" aria-label="Last spoken message" role="region">
+      <p id="last-msg-text">Welcome to Hear2Use.</p>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PANELS
+    ═══════════════════════════════════════════ -->
+    <main id="main-content">
+
+      <!-- ── 1. SCAN ── -->
+      <section id="panel-scan" class="panel" role="region" aria-labelledby="tab-scan" aria-hidden="false">
+        <h1 class="panel-title">Scan &amp; Speak</h1>
+        <p class="panel-desc">Point your camera at a food label, letter, or sign. Hear2Use will read it aloud.</p>
+
+        <!-- Hidden file input — triggered by scan button -->
+        <input
+          type="file"
+          id="camera-input"
+          accept="image/*"
+          capture="environment"
+          aria-label="Take a photo to scan"
+          class="visually-hidden"
+        />
+
+        <div class="scan-actions">
+          <button id="scan-btn" class="btn-primary btn-xl" aria-describedby="scan-hint">
+            <span aria-hidden="true">📷</span> Scan
+          </button>
+          <p id="scan-hint" class="hint-text">Opens your rear camera. If there is no camera, you can choose a photo from your gallery.</p>
+        </div>
+
+        <!-- Result card (hidden until scan completes) -->
+        <div id="scan-result" class="result-card" hidden aria-live="polite">
+          <h2 id="result-heading" class="result-name">—</h2>
+          <dl id="result-dl" class="result-dl"></dl>
+          <div class="result-actions">
+            <button id="save-btn"        class="btn-secondary" hidden aria-label="Save this item to My Kitchen">💾 Save to my kitchen</button>
+            <button id="rescan-btn"      class="btn-secondary" aria-label="Scan another item">📷 Scan again</button>
+            <button id="result-speak-btn" class="btn-secondary" aria-label="Speak result again">🔊 Speak again</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 2. KITCHEN ── -->
+      <section id="panel-kitchen" class="panel" role="region" aria-labelledby="tab-kitchen" aria-hidden="true" hidden>
+        <h1 class="panel-title">My Kitchen</h1>
+
+        <!-- Impact counter -->
+        <div class="impact-row" role="group" aria-label="Sustainability impact this week">
+          <div class="impact-tile">
+            <span class="impact-num" id="count-used"     aria-live="polite">0</span>
+            <span class="impact-label">Items used<br>in time</span>
+          </div>
+          <div class="impact-tile">
+            <span class="impact-num" id="count-recycled" aria-live="polite">0</span>
+            <span class="impact-label">Packages<br>recycled</span>
+          </div>
+        </div>
+
+        <div class="kitchen-actions">
+          <button id="expiring-btn"  class="btn-primary"   aria-label="Speak items expiring soon">🔊 What's expiring?</button>
+          <button id="mark-used-btn" class="btn-secondary" aria-label="Mark one item as used in time">✅ Mark used</button>
+          <button id="mark-recycled-btn" class="btn-secondary" aria-label="Mark one package recycled">♻️ Mark recycled</button>
+        </div>
+
+        <ul id="kitchen-list" class="kitchen-list" aria-label="Saved kitchen items, sorted by date" aria-live="polite">
+          <!-- Populated by kitchen.js -->
+        </ul>
+
+        <p id="kitchen-empty" class="empty-msg" hidden>No items saved yet. Scan a food label and tap "Save to my kitchen".</p>
+      </section>
+
+      <!-- ── 3. PLACES ── -->
+      <section id="panel-places" class="panel" role="region" aria-labelledby="tab-places" aria-hidden="true" hidden>
+        <h1 class="panel-title">What's Around Me</h1>
+        <p class="panel-desc">Nearby shops, services and recycling points — independent businesses first.</p>
+        <p class="demo-notice" role="note">⚠️ Demo data for a London university area. Not real-time.</p>
+
+        <div class="places-actions">
+          <button id="near-me-btn"   class="btn-primary"   aria-label="Speak a summary of what is nearby">🔊 What's near me?</button>
+          <button id="next-place-btn"    class="btn-secondary" hidden aria-label="Speak next place">▶ Next</button>
+          <button id="repeat-place-btn"  class="btn-secondary" hidden aria-label="Repeat this place">🔊 Repeat</button>
+          <button id="detail-place-btn"  class="btn-secondary" hidden aria-label="Hear full details of this place">📋 Details</button>
+          <button id="stop-tour-btn"     class="btn-secondary" hidden aria-label="Stop the places tour">✕ Stop</button>
+        </div>
+
+        <ul id="places-list" class="places-list" aria-label="Nearby places" aria-live="polite">
+          <!-- Populated by places.js -->
+        </ul>
+      </section>
+
+      <!-- ── 4. SETTINGS ── -->
+      <section id="panel-settings" class="panel" role="region" aria-labelledby="tab-settings" aria-hidden="true" hidden>
+        <h1 class="panel-title">Settings</h1>
+
+        <form id="settings-form" novalidate aria-label="App settings">
+
+          <div class="setting-group">
+            <h2 class="setting-heading">AI &amp; Camera</h2>
+
+            <label class="setting-label" for="api-key-input">
+              Gemini API Key
+              <span class="setting-hint">Stored only on this device. Leave blank to use demo mode.</span>
+            </label>
+            <input
+              type="password"
+              id="api-key-input"
+              class="setting-input"
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="api-key-hint"
+              placeholder="Paste your Gemini API key here"
+            />
+            <p id="api-key-hint" class="hint-text">Demo mode works without a key. For a real scan, get a free key at ai.google.dev.</p>
+          </div>
+
+          <div class="setting-group">
+            <h2 class="setting-heading">Speech</h2>
+
+            <label class="setting-label" for="voice-rate">
+              Speech speed
+              <span class="setting-hint">1 is normal. Lower is slower, higher is faster.</span>
+            </label>
+            <input type="range" id="voice-rate" class="setting-range" min="0.5" max="2" step="0.1" value="0.9" aria-valuemin="0.5" aria-valuemax="2" />
+            <output id="rate-output" for="voice-rate" aria-live="polite">0.9×</output>
+
+            <label class="setting-label" for="voice-lang">Voice language / accent</label>
+            <select id="voice-lang" class="setting-select">
+              <option value="en-GB">English (UK)</option>
+              <option value="en-US">English (US)</option>
+              <option value="en-AU">English (Australia)</option>
+              <option value="fr-FR">French</option>
+              <option value="de-DE">German</option>
+              <option value="es-ES">Spanish</option>
+            </select>
+
+            <label class="setting-label" for="detail-level">Detail level</label>
+            <select id="detail-level" class="setting-select">
+              <option value="brief">Brief – key facts only</option>
+              <option value="detailed">Detailed – full information</option>
+            </select>
+
+            <div class="setting-toggle-row">
+              <label class="setting-label" for="use-app-voice">
+                Use app voice
+                <span class="setting-hint">Turn off if your screen reader (VoiceOver / TalkBack) already reads everything.</span>
+              </label>
+              <input type="checkbox" id="use-app-voice" class="setting-toggle" checked aria-describedby="voice-hint" role="switch" />
+            </div>
+            <p id="voice-hint" class="hint-text">When off, the app will still update the screen but will not speak.</p>
+          </div>
+
+          <div class="setting-group">
+            <h2 class="setting-heading">Notifications &amp; Display</h2>
+
+            <label class="setting-label" for="warning-days">
+              Expiry warning — days ahead
+              <span class="setting-hint">You'll be alerted when items expire within this many days.</span>
+            </label>
+            <input type="number" id="warning-days" class="setting-input" min="1" max="14" value="2" />
+
+            <div class="setting-toggle-row">
+              <label class="setting-label" for="high-contrast">
+                High contrast mode
+                <span class="setting-hint">Increases text size and contrast. On by default.</span>
+              </label>
+              <input type="checkbox" id="high-contrast" class="setting-toggle" checked role="switch" />
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <h2 class="setting-heading">Data</h2>
+            <div class="setting-btn-row">
+              <button type="button" id="save-settings-btn" class="btn-primary">💾 Save settings</button>
+              <button type="button" id="load-demo-btn"     class="btn-secondary">🧪 Load demo data</button>
+              <button type="button" id="clear-data-btn"    class="btn-danger">🗑️ Clear all data</button>
+            </div>
+          </div>
+
+        </form>
+      </section>
+
+    </main><!-- /main-content -->
+
+    <!-- ══════════════════════════════════════════
+         BOTTOM TAB BAR
+    ═══════════════════════════════════════════ -->
+    <nav class="tab-bar" role="tablist" aria-label="Main navigation">
+      <button id="tab-scan"     class="tab-btn active" role="tab" aria-selected="true"  aria-controls="panel-scan"     tabindex="0">
+        <span aria-hidden="true">📷</span><span class="tab-label">Scan</span>
+      </button>
+      <button id="tab-kitchen"  class="tab-btn"        role="tab" aria-selected="false" aria-controls="panel-kitchen"  tabindex="-1">
+        <span aria-hidden="true">🧊</span><span class="tab-label">Kitchen</span>
+      </button>
+      <button id="tab-places"   class="tab-btn"        role="tab" aria-selected="false" aria-controls="panel-places"   tabindex="-1">
+        <span aria-hidden="true">🗺️</span><span class="tab-label">Places</span>
+      </button>
+      <button id="tab-settings" class="tab-btn"        role="tab" aria-selected="false" aria-controls="panel-settings" tabindex="-1">
+        <span aria-hidden="true">⚙️</span><span class="tab-label">Settings</span>
+      </button>
+    </nav>
+
+  </div><!-- /app -->
+
+  <!-- Scripts — loaded as ES modules -->
+  <script type="module" src="js/app.js"></script>
+
+</body>
+</html>

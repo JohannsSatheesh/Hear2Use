@@ -1,0 +1,137 @@
+[
+  {
+    "id": "p01",
+    "name": "Green Leaf Grocer",
+    "category": "grocery",
+    "independent": true,
+    "shortDescription": "Small independent greengrocer selling fresh fruit, veg and locally grown produce.",
+    "approxWalkMinutes": 4,
+    "accessibilityNotes": "Step-free entrance. Wide aisles. Staff are happy to help read labels."
+  },
+  {
+    "id": "p02",
+    "name": "Sunrise Mini Mart",
+    "category": "grocery",
+    "independent": true,
+    "shortDescription": "Family-run convenience store open until 11pm. Good range of everyday essentials.",
+    "approxWalkMinutes": 7,
+    "accessibilityNotes": "One small step at entrance. Narrow aisles in places."
+  },
+  {
+    "id": "p03",
+    "name": "Tesco Express",
+    "category": "grocery",
+    "independent": false,
+    "shortDescription": "Large chain convenience store with a wide product range.",
+    "approxWalkMinutes": 9,
+    "accessibilityNotes": "Step-free entrance. Accessible toilets available. Ask staff for the Tesco Accessibility Guide."
+  },
+  {
+    "id": "p04",
+    "name": "The Lamplight Café",
+    "category": "cafe",
+    "independent": true,
+    "shortDescription": "Cosy independent café serving hot meals, sandwiches and good coffee. Free Wi-Fi.",
+    "approxWalkMinutes": 5,
+    "accessibilityNotes": "Step-free entrance. Large-print menus available on request. Quiet corner seating."
+  },
+  {
+    "id": "p05",
+    "name": "Barista Brothers",
+    "category": "cafe",
+    "independent": true,
+    "shortDescription": "Specialty coffee shop run by two brothers. Also sells pastries and light lunches.",
+    "approxWalkMinutes": 8,
+    "accessibilityNotes": "Step-free entrance. Staff are trained to help visually impaired customers read menus."
+  },
+  {
+    "id": "p06",
+    "name": "Meridian Pharmacy",
+    "category": "pharmacy",
+    "independent": true,
+    "shortDescription": "Independent pharmacy offering prescriptions, over-the-counter medicines and health advice.",
+    "approxWalkMinutes": 6,
+    "accessibilityNotes": "Step-free entrance. Pharmacists can provide large-print medication labels on request."
+  },
+  {
+    "id": "p07",
+    "name": "Boots",
+    "category": "pharmacy",
+    "independent": false,
+    "shortDescription": "Chain pharmacy and health and beauty store.",
+    "approxWalkMinutes": 10,
+    "accessibilityNotes": "Step-free entrance. Accessible checkout lanes. Hearing loop available."
+  },
+  {
+    "id": "p08",
+    "name": "Fresh Start Launderette",
+    "category": "launderette",
+    "independent": true,
+    "shortDescription": "Self-service launderette with large and small machines. Open 7am to 9pm.",
+    "approxWalkMinutes": 6,
+    "accessibilityNotes": "Step-free entrance. Machine controls have tactile buttons. Staff on site until 6pm."
+  },
+  {
+    "id": "p09",
+    "name": "Borough Road Recycling Point",
+    "category": "recycling",
+    "independent": false,
+    "shortDescription": "Council recycling point with separate banks for glass, textiles and small electricals.",
+    "approxWalkMinutes": 5,
+    "accessibilityNotes": "All banks are at ground level. Clear tactile labels on each opening. Fully accessible."
+  },
+  {
+    "id": "p10",
+    "name": "Student Union Building",
+    "category": "campus",
+    "independent": false,
+    "shortDescription": "Student union with a café, welfare office, study spaces and a free food bank for students.",
+    "approxWalkMinutes": 3,
+    "accessibilityNotes": "Fully accessible. Quiet rooms available. Disability support office on the ground floor."
+  },
+  {
+    "id": "p11",
+    "name": "University Library",
+    "category": "campus",
+    "independent": false,
+    "shortDescription": "Main university library with 24-hour access using your student card.",
+    "approxWalkMinutes": 4,
+    "accessibilityNotes": "Accessible entrance at the east door. Screen-reader computers on the ground floor. Book a one-to-one accessibility support session."
+  },
+  {
+    "id": "p12",
+    "name": "Neighbourhood Food Bank",
+    "category": "campus",
+    "independent": true,
+    "shortDescription": "Community food bank. Free food parcels for anyone in need — no referral required on Tuesdays.",
+    "approxWalkMinutes": 11,
+    "accessibilityNotes": "Step-free entrance. Staff can read labels and help pack bags."
+  },
+  {
+    "id": "p13",
+    "name": "Khalil's Halal Butcher",
+    "category": "grocery",
+    "independent": true,
+    "shortDescription": "Independent halal butcher selling fresh meat and a range of Middle Eastern groceries.",
+    "approxWalkMinutes": 8,
+    "accessibilityNotes": "One small step at entrance. Staff are very helpful and will explain products."
+  },
+  {
+    "id": "p14",
+    "name": "Canopy Books & Coffee",
+    "category": "cafe",
+    "independent": true,
+    "shortDescription": "Independent bookshop with a café inside. Good for a quiet study break.",
+    "approxWalkMinutes": 12,
+    "accessibilityNotes": "Step-free entrance. Audiobook section available. Staff can describe books on request."
+  },
+  {
+    "id": "p15",
+    "name": "Park Lane Bottle Bank",
+    "category": "recycling",
+    "independent": false,
+    "shortDescription": "Council glass recycling bottle bank. Separate openings for clear, green and brown glass.",
+    "approxWalkMinutes": 7,
+    "accessibilityNotes": "Ground level. Openings are labelled in large print and with colour and tactile markers."
+  }
+]

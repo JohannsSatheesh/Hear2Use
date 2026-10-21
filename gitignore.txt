@@ -1,0 +1,15 @@
+# Rename this file to .gitignore before pushing
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# No node_modules needed
+node_modules/
+
+# Never commit API keys
+.env
+*.env
