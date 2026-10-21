@@ -144,16 +144,22 @@
               Gemini API Key
               <span class="setting-hint">Stored only on this device. Leave blank to use demo mode.</span>
             </label>
-            <input
-              type="password"
-              id="api-key-input"
-              class="setting-input"
-              autocomplete="off"
-              spellcheck="false"
-              aria-describedby="api-key-hint"
-              placeholder="Paste your Gemini API key here"
-            />
-            <p id="api-key-hint" class="hint-text">Demo mode works without a key. For a real scan, get a free key at ai.google.dev.</p>
+            <div style="display:flex;gap:.5rem;align-items:stretch;">
+              <input
+                type="text"
+                id="api-key-input"
+                class="setting-input"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                aria-describedby="api-key-hint"
+                placeholder="Paste your Gemini API key here"
+                style="flex:1;font-size:.82rem;letter-spacing:.02em;"
+              />
+              <button type="button" id="clear-key-btn" class="btn-secondary" style="min-height:52px;padding:.5rem 1rem;font-size:.85rem;white-space:nowrap;" aria-label="Clear API key field">✕ Clear</button>
+            </div>
+            <p id="api-key-hint" class="hint-text">Get a free key at <strong>aistudio.google.com</strong>. Paste it above then tap <strong>Save settings</strong>. The key is stored only on this device.</p>
           </div>
 
           <div class="setting-group">

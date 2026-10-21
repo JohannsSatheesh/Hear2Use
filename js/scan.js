@@ -109,8 +109,9 @@ export async function handlePhoto(file) {
   _showLoading("Reading the label…");
 
   try {
-    const base64 = await _fileToBase64(file);
-    const result = await getAIResult(base64);
+    const base64   = await _fileToBase64(file);
+    const mimeType = file.type || "image/jpeg";
+    const result   = await getAIResult(base64, mimeType);
     _currentResult = result;
     _hideLoading();
     _renderResult(result);
@@ -129,10 +130,14 @@ export async function handlePhoto(file) {
 //   Calls the Gemini vision API.
 //   Falls back to getDemoResult() if no key or network error.
 // ─────────────────────────────────────────────────────────────
-export async function getAIResult(imageBase64) {
+export async function getAIResult(imageBase64, mimeType = "image/jpeg") {
   const { apiKey } = loadSettings();
 
+  // Debug: log whether a key was found (never logs the key itself)
+  console.log("[scan.js] API key present:", !!apiKey, "| length:", apiKey?.length ?? 0);
+
   if (!apiKey) {
+    console.log("[scan.js] No API key — using demo result");
     return getDemoResult();
   }
 
@@ -156,7 +161,7 @@ Do not include any text outside the JSON object.`;
     contents: [{
       parts: [
         { text: prompt },
-        { inline_data: { mime_type: "image/jpeg", data: imageBase64 } },
+        { inline_data: { mime_type: mimeType, data: imageBase64 } },
       ],
     }],
   };
@@ -178,10 +183,14 @@ Do not include any text outside the JSON object.`;
 
     // Strip possible markdown code fences
     const cleaned = raw.replace(/```json|```/g, "").trim();
+    console.log("[scan.js] AI raw response:", cleaned);
     return JSON.parse(cleaned);
 
   } catch (err) {
     console.warn("[scan.js] AI call failed, using demo result:", err.message);
+    // Show the error visibly in the last-message bar so we can debug on phone
+    const bar = document.getElementById("last-msg-text");
+    if (bar) bar.textContent = `AI error: ${err.message} — showing demo result`;
     return getDemoResult();
   }
 }

@@ -122,6 +122,12 @@ export function initSettings() {
     applyTheme(e.target.checked);
   });
 
+  // Clear API key button
+  document.getElementById("clear-key-btn")?.addEventListener("click", () => {
+    const input = document.getElementById("api-key-input");
+    if (input) { input.value = ""; input.focus(); }
+  });
+
   // Load demo data
   document.getElementById("load-demo-btn")?.addEventListener("click", loadDemoData);
 
