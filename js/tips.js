@@ -116,6 +116,11 @@ export function buildSpeechFromResult(result, detailLevel = "brief") {
     parts.push("No date was found on this item.");
   }
 
+  // Allergens — always speak if present
+  if (result.allergens && result.allergens.trim()) {
+    parts.push(`Allergens: ${result.allergens}`);
+  }
+
   // Storage
   const storage = result.storageTip || storageFallback(result.kind);
   if (storage) parts.push(`Storage: ${storage}`);

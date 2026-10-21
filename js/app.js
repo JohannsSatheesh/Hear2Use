@@ -9,9 +9,9 @@
 
 import { initSettings, loadSettings, applyTheme } from "./settings.js";
 import { initScan }     from "./scan.js";
-import { initKitchen }  from "./kitchen.js";
-import { initPlaces }   from "./places.js";
-import { repeatLast, announce } from "./voice.js";
+import { initKitchen, speakExpiring, updateImpactCounter, getFirstItem } from "./kitchen.js";
+import { initPlaces, speakPlacesSummary, startPlaceTour } from "./places.js";
+import { repeatLast, announce, initVoiceCommands } from "./voice.js";
 
 // ── Tab definitions ───────────────────────────────────────────
 const TABS = [
@@ -45,8 +45,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // 5. Media Session API — headphone skip buttons navigate kitchen items
   _initMediaSession();
 
-  // 6. Welcome message
-  announce("Welcome to Hear2Use. Tap Scan to read a label, or explore the tabs at the bottom.");
+  // 6. Voice commands
+  initVoiceCommands({
+    scan:          () => { _showTab("tab-scan"); document.getElementById("scan-btn")?.click(); },
+    speakExpiring: () => { _showTab("tab-kitchen"); speakExpiring(); },
+    eatFirst:      () => { _showTab("tab-kitchen"); _speakEatFirst(); },
+    markUsed:      () => { _showTab("tab-kitchen"); updateImpactCounter("used"); },
+    markRecycled:  () => { _showTab("tab-kitchen"); updateImpactCounter("recycled"); },
+    next:          () => _speakNextKitchenItem(1),
+    previous:      () => _speakNextKitchenItem(-1),
+    places:        () => { _showTab("tab-places"); speakPlacesSummary(); },
+  });
+
+  // 7. Welcome message
+  announce("Welcome to Hear2Use. Tap Scan to read a label, or explore the tabs at the bottom. Say Help for voice commands.");
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -189,4 +201,23 @@ function _daysUntil(dateStr) {
   const today  = new Date(); today.setHours(0,0,0,0);
   const target = new Date(dateStr); target.setHours(0,0,0,0);
   return Math.round((target - today) / 86400000);
+}
+
+function _speakEatFirst() {
+  try {
+    const raw   = localStorage.getItem("h2u_kitchen");
+    const items = raw ? JSON.parse(raw) : [];
+    if (!items.length) { announce("Your kitchen is empty."); return; }
+    const sorted = [...items].filter(i => i.date).sort((a,b) => new Date(a.date)-new Date(b.date));
+    if (!sorted.length) { announce("No items with dates found."); return; }
+    const first = sorted[0];
+    const days  = _daysUntil(first.date);
+    const msg   = days < 0  ? `Eat ${first.name} immediately — it is past its use-by date.`
+                : days === 0 ? `Eat ${first.name} today.`
+                : days === 1 ? `Eat ${first.name} next — it expires tomorrow.`
+                :              `Eat ${first.name} next — ${days} days left.`;
+    announce(msg);
+  } catch (err) {
+    console.error("[app.js] _speakEatFirst:", err);
+  }
 }

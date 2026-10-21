@@ -18,6 +18,7 @@ import { loadSettings }   from "./settings.js";
 const SK_KITCHEN = "h2u_kitchen";
 const SK_IMPACT  = "h2u_impact";
 const SK_WEEK    = "h2u_impact_week";
+const SK_STREAK  = "h2u_streak";
 
 // ─────────────────────────────────────────────────────────────
 // initKitchen()
@@ -26,6 +27,7 @@ const SK_WEEK    = "h2u_impact_week";
 export function initKitchen() {
   renderKitchen();
   renderImpact();
+  renderStreak();
 
   document.getElementById("expiring-btn")     ?.addEventListener("click", speakExpiring);
   document.getElementById("mark-used-btn")    ?.addEventListener("click", () => updateImpactCounter("used"));
@@ -137,6 +139,9 @@ export function updateImpactCounter(type) {
   _saveImpact(imp);
   renderImpact();
 
+  // Increment streak when marking used
+  if (type === "used") _incrementStreak();
+
   const msg = type === "used"
     ? `Great job! ${imp.used} item${imp.used === 1 ? "" : "s"} used in time this week.`
     : `Well done! ${imp.recycled} package${imp.recycled === 1 ? "" : "s"} recycled correctly this week.`;
@@ -148,6 +153,41 @@ export function updateImpactCounter(type) {
 // ─────────────────────────────────────────────────────────────
 export function getImpactCounts() {
   return _loadImpact();
+}
+
+// ─────────────────────────────────────────────────────────────
+// getFirstItem()
+//   Returns the most urgent kitchen item (for voice commands).
+// ─────────────────────────────────────────────────────────────
+export function getFirstItem() {
+  const items = _loadKitchen().filter(i => i.date).sort((a,b) => new Date(a.date)-new Date(b.date));
+  return items[0] ?? null;
+}
+
+// ─────────────────────────────────────────────────────────────
+// renderStreak()
+//   Shows the food-rescued streak in the kitchen panel.
+// ─────────────────────────────────────────────────────────────
+export function renderStreak() {
+  const streak = _loadStreak();
+  let bar = document.getElementById("streak-bar");
+  if (!bar) {
+    // Create the streak bar if it doesn't exist yet
+    bar = document.createElement("div");
+    bar.id = "streak-bar";
+    bar.className = "streak-bar";
+    bar.setAttribute("aria-label", `Food rescued streak: ${streak.count} day${streak.count === 1 ? "" : "s"}`);
+    bar.innerHTML = `
+      <span class="streak-num" id="streak-num" aria-live="polite">${streak.count}</span>
+      <span class="streak-label">🔥 Day streak<br><small>items used before expiry</small></span>
+    `;
+    const impactRow = document.querySelector(".impact-row");
+    impactRow?.parentNode?.insertBefore(bar, impactRow);
+  } else {
+    const numEl = document.getElementById("streak-num");
+    if (numEl) numEl.textContent = streak.count;
+    bar.setAttribute("aria-label", `Food rescued streak: ${streak.count} day${streak.count === 1 ? "" : "s"}`);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -237,6 +277,110 @@ function _buildKitchenCard(item) {
 
   return li;
 }
+
+
+// ─────────────────────────────────────────────────────────────
+// STREAK helpers
+// ─────────────────────────────────────────────────────────────
+function _loadStreak() {
+  try { return JSON.parse(localStorage.getItem(SK_STREAK)) ?? { count: 0, lastDate: null }; }
+  catch { return { count: 0, lastDate: null }; }
+}
+function _saveStreak(obj) { localStorage.setItem(SK_STREAK, JSON.stringify(obj)); }
+
+const STREAK_MILESTONES = [3, 7, 14, 30];
+
+function _incrementStreak() {
+  const streak  = _loadStreak();
+  const today   = new Date().toISOString().slice(0, 10);
+  if (streak.lastDate === today) return; // already counted today
+
+  streak.count++;
+  streak.lastDate = today;
+  _saveStreak(streak);
+  renderStreak();
+
+  // Announce milestones
+  if (STREAK_MILESTONES.includes(streak.count)) {
+    announce(`Amazing! ${streak.count} day streak — ${streak.count} days with food rescued. Keep it up!`);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// WHICH BIN? QUIZ
+//   Called from scan.js after a successful food scan.
+//   Injects a quiz card below the scan result.
+// ─────────────────────────────────────────────────────────────
+export function startBinQuiz(disposal) {
+  // Extract the bin type from the disposal text
+  const lower = disposal.toLowerCase();
+  let correctBin, options;
+
+  if (/recycl/.test(lower)) {
+    correctBin = "recycling";
+    options = ["recycling", "general waste", "food waste", "compost"];
+  } else if (/general waste|black bin/.test(lower)) {
+    correctBin = "general waste";
+    options = ["recycling", "general waste", "food waste", "compost"];
+  } else if (/food waste|compost/.test(lower)) {
+    correctBin = "food waste";
+    options = ["recycling", "general waste", "food waste", "paper bin"];
+  } else if (/paper|card/.test(lower)) {
+    correctBin = "paper recycling";
+    options = ["recycling", "general waste", "paper recycling", "food waste"];
+  } else {
+    return; // can't make a quiz from this
+  }
+
+  // Remove existing quiz
+  document.getElementById("bin-quiz")?.remove();
+
+  const quiz = document.createElement("div");
+  quiz.id = "bin-quiz";
+  quiz.className = "quiz-card";
+  quiz.setAttribute("role", "region");
+  quiz.setAttribute("aria-label", "Which bin quiz");
+  quiz.innerHTML = `
+    <h3>♻️ Which bin?</h3>
+    <p id="quiz-question">Where does this packaging go?</p>
+    <div class="quiz-options" role="group" aria-label="Bin options">
+      ${options.map(opt =>
+        `<button class="btn-secondary quiz-opt" data-bin="${opt}" aria-label="${opt}">${opt}</button>`
+      ).join("")}
+    </div>
+    <p id="quiz-feedback" aria-live="polite" style="margin-top:.75rem;font-weight:700;"></p>
+  `;
+
+  // Insert after scan result
+  const result = document.getElementById("scan-result");
+  result?.parentNode?.insertBefore(quiz, result.nextSibling);
+
+  // Speak the question
+  announce("Quick quiz! Where does this packaging go? Choose from the options on screen.");
+
+  // Wire buttons
+  quiz.querySelectorAll(".quiz-opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const chosen = btn.dataset.bin;
+      const fb = document.getElementById("quiz-feedback");
+      if (chosen === correctBin) {
+        if (fb) fb.textContent = "✅ Correct! Well done.";
+        announce("Correct! Well done. That's one more package recycled right.");
+        updateImpactCounter("recycled");
+        // Remove quiz after short delay
+        setTimeout(() => quiz.remove(), 3000);
+      } else {
+        if (fb) fb.textContent = `❌ Not quite — it goes in the ${correctBin} bin.`;
+        announce(`Not quite. This one goes in the ${correctBin} bin. Try to remember for next time.`);
+        // Highlight correct answer
+        quiz.querySelectorAll(".quiz-opt").forEach(b => {
+          if (b.dataset.bin === correctBin) b.style.borderColor = "var(--ok)";
+        });
+      }
+    });
+  });
+}
+
 
 function _esc(str) {
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");

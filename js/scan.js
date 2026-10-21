@@ -13,7 +13,7 @@
 import { announce, announceAlert } from "./voice.js";
 import { buildSpeechFromResult }   from "./tips.js";
 import { loadSettings }            from "./settings.js";
-import { saveItem }                from "./kitchen.js";
+import { saveItem, startBinQuiz }  from "./kitchen.js";
 
 // ── Demo results — used when no API key is set or network fails ──
 //   Three rotating results: milk → letter → ready meal → milk …
@@ -24,6 +24,7 @@ const DEMO_RESULTS = [
     summary:    "A carton of semi-skimmed milk.",
     date:       _daysFromToday(3),
     dateType:   "use_by",
+    allergens:  "Contains milk (dairy).",
     storageTip: "Keep refrigerated below 5 degrees Celsius. Once opened, use within 3 days.",
     disposal:   "Rinse the carton and put it in the recycling bin. The cap can stay on.",
     confidence: "high",
@@ -34,6 +35,7 @@ const DEMO_RESULTS = [
     summary:    "A letter from an energy company with an account number and payment due date.",
     date:       _daysFromToday(14),
     dateType:   "expiry",
+    allergens:  "",
     storageTip: "Keep in a safe, dry place until you have paid or filed it.",
     disposal:   "Shred this letter before recycling because it contains your personal details. Then put it in the paper recycling bin.",
     confidence: "high",
@@ -44,6 +46,7 @@ const DEMO_RESULTS = [
     summary:    "A supermarket ready meal — chicken tikka masala with rice.",
     date:       _daysFromToday(-1),
     dateType:   "best_before",
+    allergens:  "Contains milk, wheat (gluten). May contain nuts.",
     storageTip: "Best stored in the fridge. Reheat thoroughly to 75 degrees Celsius before eating.",
     disposal:   "The cardboard sleeve goes in recycling. The plastic tray usually goes in general waste — check the tray for the recycling symbol.",
     confidence: "medium",
@@ -118,6 +121,11 @@ export async function handlePhoto(file) {
 
     const { detailLevel } = loadSettings();
     announce(buildSpeechFromResult(result, detailLevel));
+
+    // Task 2: trigger Which Bin? quiz for food items with disposal info
+    if (result.kind === "food" && result.disposal) {
+      setTimeout(() => startBinQuiz(result.disposal), 4000);
+    }
   } catch (err) {
     _hideLoading();
     announceAlert("Sorry, something went wrong. Please try scanning again.");
@@ -149,6 +157,7 @@ JSON shape:
   "summary": "one sentence describing what this is",
   "date": "YYYY-MM-DD or null",
   "dateType": "use_by|best_before|expiry|unknown|null",
+  "allergens": "list any allergens declared on the label, or empty string if none or not food",
   "storageTip": "one sentence on how to store it, or empty string",
   "disposal": "one sentence on how to dispose of the packaging or document",
   "confidence": "high|medium|low"

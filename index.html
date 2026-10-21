@@ -1,11 +1,14 @@
-<!-- Hear2Use v2 — cache bust -->
+<!-- Hear2Use v4 -->
 <!DOCTYPE html>
 <html lang="en" data-theme="high-contrast">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Hear2Use</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
 
@@ -35,10 +38,21 @@
     <!-- ── Header ── -->
     <header class="app-header" role="banner">
       <span class="app-logo" aria-label="Hear2Use">Hear2Use</span>
-      <button id="repeat-btn" class="btn-icon" aria-label="Repeat last message">
-        🔊 <span class="btn-label">Repeat</span>
-      </button>
+      <div style="display:flex;gap:.5rem;align-items:center;">
+        <button id="voice-cmd-btn"
+          class="btn-icon btn-voice"
+          hidden
+          aria-label="Hold to give a voice command. Shortcut: V key or Space"
+          aria-pressed="false">
+          🎙️ Hold to talk
+        </button>
+        <button id="repeat-btn" class="btn-icon" aria-label="Repeat last message">
+          🔊 <span class="btn-label">Repeat</span>
+        </button>
+      </div>
     </header>
+    <!-- Voice command status (shown below header when listening) -->
+    <div id="voice-cmd-status" aria-live="polite" style="text-align:center;font-size:.85rem;color:var(--accent);min-height:1.4em;padding:.2rem 1rem;background:var(--surface);"></div>
 
     <!-- ── Last message bar ── -->
     <div id="last-msg-bar" aria-label="Last spoken message" role="region">
