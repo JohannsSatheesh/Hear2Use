@@ -133,11 +133,10 @@ export async function handlePhoto(file) {
 export async function getAIResult(imageBase64, mimeType = "image/jpeg") {
   const { apiKey } = loadSettings();
 
-  // Debug: log whether a key was found (never logs the key itself)
-  console.log("[scan.js] API key present:", !!apiKey, "| length:", apiKey?.length ?? 0);
+  _dbg(`Key present: ${!!apiKey} | length: ${apiKey?.length ?? 0}`);
 
   if (!apiKey) {
-    console.log("[scan.js] No API key — using demo result");
+    _dbg("No API key — using demo result");
     return getDemoResult();
   }
 
@@ -167,6 +166,8 @@ Do not include any text outside the JSON object.`;
   };
 
   try {
+    _dbg(`Calling Gemini API... mime: ${mimeType}`);
+
     const resp = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
@@ -176,21 +177,22 @@ Do not include any text outside the JSON object.`;
       }
     );
 
-    if (!resp.ok) throw new Error(`API error ${resp.status}`);
+    _dbg(`HTTP status: ${resp.status}`);
 
-    const data = await resp.json();
-    const raw  = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+    if (!resp.ok) {
+      const errBody = await resp.text();
+      _dbg(`API error body: ${errBody.slice(0, 200)}`);
+      throw new Error(`HTTP ${resp.status}: ${errBody.slice(0, 100)}`);
+    }
 
-    // Strip possible markdown code fences
+    const data    = await resp.json();
+    const raw     = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
     const cleaned = raw.replace(/```json|```/g, "").trim();
-    console.log("[scan.js] AI raw response:", cleaned);
+    _dbg(`AI responded: ${cleaned.slice(0, 120)}`);
     return JSON.parse(cleaned);
 
   } catch (err) {
-    console.warn("[scan.js] AI call failed, using demo result:", err.message);
-    // Show the error visibly in the last-message bar so we can debug on phone
-    const bar = document.getElementById("last-msg-text");
-    if (bar) bar.textContent = `AI error: ${err.message} — showing demo result`;
+    _dbg(`FAILED: ${err.message}`);
     return getDemoResult();
   }
 }
@@ -200,16 +202,29 @@ Do not include any text outside the JSON object.`;
 //   Returns the next pre-written demo result (cycles through 3).
 // ─────────────────────────────────────────────────────────────
 export function getDemoResult() {
-  const result = DEMO_RESULTS[_demoIndex % DEMO_RESULTS.length];
+  const idx    = _demoIndex % DEMO_RESULTS.length;
   _demoIndex++;
-  // Refresh relative dates so they are correct whenever the demo runs
-  if (_demoIndex % DEMO_RESULTS.length === 1) result.date = _daysFromToday(3);
-  if (_demoIndex % DEMO_RESULTS.length === 2) result.date = _daysFromToday(14);
-  if (_demoIndex % DEMO_RESULTS.length === 0) result.date = _daysFromToday(-1);
-  return { ...result };
+  // Clone so we don't mutate the shared DEMO_RESULTS array
+  const result = { ...DEMO_RESULTS[idx] };
+  // Always refresh the date to be relative to today
+  const offsets = [3, 14, -1];
+  result.date = _daysFromToday(offsets[idx]);
+  return result;
 }
 
 // ── Private helpers ───────────────────────────────────────────
+
+// _dbg: writes a timestamped line to the on-screen debug output in Settings
+// so we can diagnose issues on mobile without dev tools.
+const _dbgLines = [];
+window.__h2uDbgLines = _dbgLines; // expose for settings.js debug panel
+function _dbg(msg) {
+  const ts = new Date().toISOString().slice(11, 23);
+  const line = `[${ts}] ${msg}`;
+  _dbgLines.push(line);
+  if (_dbgLines.length > 20) _dbgLines.shift();
+  console.log("[scan]", msg);
+}
 
 function _fileToBase64(file) {
   return new Promise((resolve, reject) => {

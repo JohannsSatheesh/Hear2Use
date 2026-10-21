@@ -128,22 +128,28 @@ export function initSettings() {
     if (input) { input.value = ""; input.focus(); }
   });
 
-  // Debug button — shows exactly what's in localStorage, key length, and app version
+  // Debug button — shows key status + live scan log
   document.getElementById("debug-btn")?.addEventListener("click", () => {
-    const raw     = localStorage.getItem("h2u_settings");
-    const parsed  = raw ? JSON.parse(raw) : null;
-    const keyVal  = parsed?.apiKey ?? "";
-    const out     = document.getElementById("debug-out");
+    const raw    = localStorage.getItem("h2u_settings");
+    const parsed = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
+    const keyVal = parsed?.apiKey ?? "";
+    const out    = document.getElementById("debug-out");
     if (!out) return;
 
     out.style.display = "block";
-    out.textContent = [
-      `App version:   2 (cache-busted)`,
+    const header = [
+      `=== Settings ===`,
+      `App version:   3`,
       `Key present:   ${!!keyVal}`,
       `Key length:    ${keyVal.length}`,
-      `Key preview:   ${keyVal ? keyVal.slice(0,6) + "…" + keyVal.slice(-4) : "(none)"}`,
-      `Raw stored:    ${raw ?? "(nothing in localStorage)"}`,
+      `Key preview:   ${keyVal ? keyVal.slice(0,8) + "…" + keyVal.slice(-4) : "(none — demo mode)"}`,
+      ``,
+      `=== Scan log (last activity) ===`,
     ].join("\n");
+
+    // Pull scan log lines from scan.js via a global we'll expose
+    const scanLines = window.__h2uDbgLines?.join("\n") ?? "(no scans yet — tap Scan first)";
+    out.textContent = header + "\n" + scanLines;
   });
 
   // Load demo data
