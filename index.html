@@ -1,3 +1,4 @@
+<!-- Hear2Use v2 — cache bust -->
 <!DOCTYPE html>
 <html lang="en" data-theme="high-contrast">
 <head>
@@ -223,6 +224,13 @@
               <button type="button" id="load-demo-btn"     class="btn-secondary">🧪 Load demo data</button>
               <button type="button" id="clear-data-btn"    class="btn-danger">🗑️ Clear all data</button>
             </div>
+          </div>
+
+          <!-- ── Debug panel ── -->
+          <div class="setting-group" id="debug-panel">
+            <h2 class="setting-heading">🔍 Debug (API key check)</h2>
+            <button type="button" id="debug-btn" class="btn-secondary" style="min-height:52px;">Check what's saved</button>
+            <pre id="debug-out" style="margin-top:.75rem;font-size:.78rem;color:var(--accent);white-space:pre-wrap;word-break:break-all;background:var(--surface2);padding:.75rem;border-radius:8px;display:none;"></pre>
           </div>
 
         </form>

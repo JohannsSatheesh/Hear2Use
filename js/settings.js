@@ -128,6 +128,24 @@ export function initSettings() {
     if (input) { input.value = ""; input.focus(); }
   });
 
+  // Debug button — shows exactly what's in localStorage, key length, and app version
+  document.getElementById("debug-btn")?.addEventListener("click", () => {
+    const raw     = localStorage.getItem("h2u_settings");
+    const parsed  = raw ? JSON.parse(raw) : null;
+    const keyVal  = parsed?.apiKey ?? "";
+    const out     = document.getElementById("debug-out");
+    if (!out) return;
+
+    out.style.display = "block";
+    out.textContent = [
+      `App version:   2 (cache-busted)`,
+      `Key present:   ${!!keyVal}`,
+      `Key length:    ${keyVal.length}`,
+      `Key preview:   ${keyVal ? keyVal.slice(0,6) + "…" + keyVal.slice(-4) : "(none)"}`,
+      `Raw stored:    ${raw ?? "(nothing in localStorage)"}`,
+    ].join("\n");
+  });
+
   // Load demo data
   document.getElementById("load-demo-btn")?.addEventListener("click", loadDemoData);
 
