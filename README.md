@@ -3,6 +3,23 @@
 > A voice-first web app that helps blind and partially sighted students live independently — less food wasted, correct recycling, and a spoken guide to what's nearby.
 
 **Team Z** — IBM Bob Design Thinking Hackathon | UN SDG 12
+**Live:** https://johannssatheesh.github.io/Hear2Use/
+
+---
+
+## Features
+
+| # | Feature | How it works |
+|---|---------|-------------|
+| 1 | **Scan & Speak** | Tap the Scan button → camera opens → AI reads the label aloud: name, use-by date, date-type explanation, **allergens**, storage advice, recycling disposal |
+| 2 | **My Kitchen** | Saved food items sorted by urgency. "What's expiring?" speaks items due within your warning window |
+| 3 | **Food Rescued Streak** | Every time you mark an item used in time, your day streak increases. Milestones at 3, 7, 14 and 30 days are announced aloud |
+| 4 | **Which Bin? Quiz** | After every food scan, a spoken quiz asks which bin the packaging goes in. Tap the right answer for instant feedback and a recycling point |
+| 5 | **Impact Counter** | Weekly counts of items used in time and packages recycled correctly |
+| 6 | **What's Around Me** | Spoken tour of 15 nearby places (grocers, cafés, pharmacy, launderette, recycling points, campus) — independent businesses first |
+| 7 | **Voice Commands** | Say commands hands-free using Chrome's SpeechRecognition (Android). Keyboard shortcut: **V** or **Space** |
+| 8 | **Settings** | API key, speech speed, voice, detail level, warning days, high-contrast mode, "Use app voice" switch |
+| 9 | **Demo mode** | Works with no API key — cycles through milk → electricity bill → ready meal |
 
 ---
 
@@ -111,6 +128,27 @@ The rest of the app does not care which AI you use, as long as `getAIResult()` r
   confidence: "high|medium|low"
 }
 ```
+
+---
+
+## Voice commands
+
+Available on **Chrome for Android** (hold the 🎙️ button in the header, or press **V** or **Space** on a keyboard):
+
+| Say… | Action |
+|------|--------|
+| `"Scan"` | Opens the camera |
+| `"What's expiring"` / `"What's in my kitchen"` | Speaks items expiring soon |
+| `"What should I eat first"` | Speaks the most urgent item |
+| `"Mark as used"` | Increments items-used counter + streak |
+| `"Mark as recycled"` | Increments recycled counter |
+| `"Next"` | Speaks the next kitchen item |
+| `"Previous"` | Speaks the previous kitchen item |
+| `"Repeat"` | Re-speaks the last message |
+| `"Places"` / `"What's near me"` | Starts the places tour |
+| `"Help"` | Speaks this full command list |
+
+> Voice commands require microphone permission. Chrome on Android will ask on first use. Not supported on Safari iOS — the button is hidden automatically and a clear message is shown.
 
 ---
 
