@@ -8,16 +8,14 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Hear2Use</title>
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
 
   <!-- ═══════════════════════════════════════════════
        ARIA LIVE REGIONS
   ════════════════════════════════════════════════ -->
-  <!-- polite: status updates (scan results, kitchen, places) -->
   <div id="live-status" role="status" aria-live="polite" aria-atomic="true" class="visually-hidden"></div>
-  <!-- assertive: loading / errors -->
   <div id="live-alert"  role="alert"  aria-live="assertive" aria-atomic="true" class="visually-hidden"></div>
 
   <!-- ═══════════════════════════════════════════════
@@ -51,7 +49,8 @@
         </button>
       </div>
     </header>
-    <!-- Voice command status (shown below header when listening) -->
+
+    <!-- Voice command status bar -->
     <div id="voice-cmd-status" aria-live="polite" style="text-align:center;font-size:.85rem;color:var(--accent);min-height:1.4em;padding:.2rem 1rem;background:var(--surface);"></div>
 
     <!-- ── Last message bar ── -->
@@ -69,7 +68,6 @@
         <h1 class="panel-title">Scan &amp; Speak</h1>
         <p class="panel-desc">Point your camera at a food label, letter, or sign. Hear2Use will read it aloud.</p>
 
-        <!-- Hidden file input — triggered by scan button -->
         <input
           type="file"
           id="camera-input"
@@ -91,8 +89,8 @@
           <h2 id="result-heading" class="result-name">—</h2>
           <dl id="result-dl" class="result-dl"></dl>
           <div class="result-actions">
-            <button id="save-btn"        class="btn-secondary" hidden aria-label="Save this item to My Kitchen">💾 Save to my kitchen</button>
-            <button id="rescan-btn"      class="btn-secondary" aria-label="Scan another item">📷 Scan again</button>
+            <button id="save-btn"         class="btn-secondary" hidden aria-label="Save this item to My Kitchen">💾 Save to my kitchen</button>
+            <button id="rescan-btn"       class="btn-secondary" aria-label="Scan another item">📷 Scan again</button>
             <button id="result-speak-btn" class="btn-secondary" aria-label="Speak result again">🔊 Speak again</button>
           </div>
         </div>
@@ -115,8 +113,8 @@
         </div>
 
         <div class="kitchen-actions">
-          <button id="expiring-btn"  class="btn-primary"   aria-label="Speak items expiring soon">🔊 What's expiring?</button>
-          <button id="mark-used-btn" class="btn-secondary" aria-label="Mark one item as used in time">✅ Mark used</button>
+          <button id="expiring-btn"      class="btn-primary"   aria-label="Speak items expiring soon">🔊 What's expiring?</button>
+          <button id="mark-used-btn"     class="btn-secondary" aria-label="Mark one item as used in time">✅ Mark used</button>
           <button id="mark-recycled-btn" class="btn-secondary" aria-label="Mark one package recycled">♻️ Mark recycled</button>
         </div>
 
@@ -134,11 +132,11 @@
         <p class="demo-notice" role="note">⚠️ Demo data for a London university area. Not real-time.</p>
 
         <div class="places-actions">
-          <button id="near-me-btn"   class="btn-primary"   aria-label="Speak a summary of what is nearby">🔊 What's near me?</button>
-          <button id="next-place-btn"    class="btn-secondary" hidden aria-label="Speak next place">▶ Next</button>
-          <button id="repeat-place-btn"  class="btn-secondary" hidden aria-label="Repeat this place">🔊 Repeat</button>
-          <button id="detail-place-btn"  class="btn-secondary" hidden aria-label="Hear full details of this place">📋 Details</button>
-          <button id="stop-tour-btn"     class="btn-secondary" hidden aria-label="Stop the places tour">✕ Stop</button>
+          <button id="near-me-btn"      class="btn-primary"   aria-label="Speak a summary of what is nearby">🔊 What's near me?</button>
+          <button id="next-place-btn"   class="btn-secondary" hidden aria-label="Speak next place">▶ Next</button>
+          <button id="repeat-place-btn" class="btn-secondary" hidden aria-label="Repeat this place">🔊 Repeat</button>
+          <button id="detail-place-btn" class="btn-secondary" hidden aria-label="Hear full details of this place">📋 Details</button>
+          <button id="stop-tour-btn"    class="btn-secondary" hidden aria-label="Stop the places tour">✕ Stop</button>
         </div>
 
         <ul id="places-list" class="places-list" aria-label="Nearby places" aria-live="polite">
@@ -250,7 +248,7 @@
         </form>
       </section>
 
-    </main><!-- /main-content -->
+    </main>
 
     <!-- ══════════════════════════════════════════
          BOTTOM TAB BAR
@@ -272,8 +270,7 @@
 
   </div><!-- /app -->
 
-  <!-- Scripts — loaded as ES modules -->
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=4"></script>
 
 </body>
 </html>
