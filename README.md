@@ -10,7 +10,11 @@
 
 **Final team repo:** [sedmoh/Hear2Use](https://github.com/sedmoh/Hear2Use)
 
-<!-- Add 2–3 screenshots or a GIF here, e.g. ![Scan screen](docs/scan.png) -->
+<p>
+  <img src="docs/scan.png" alt="Scan and Speak screen with a large Scan button" width="240">
+  <img src="docs/kitchen.png" alt="My Kitchen screen with expiry counters and saved items" width="240">
+  <img src="docs/places.png" alt="What's Around Me screen listing nearby independent shops" width="240">
+</p>
 
 ---
 
