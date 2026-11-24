@@ -2,8 +2,19 @@
 
 > A voice-first web app that helps blind and partially sighted students live independently — less food wasted, correct recycling, and a spoken guide to what's nearby.
 
-**Team Z** — IBM Bob Design Thinking Hackathon | UN SDG 12
-**Live:** https://johannssatheesh.github.io/Hear2Use/
+**Team Z** · IBM Bob Design Thinking Hackathon · UN SDG 12
+
+**Live demo:** https://johannssatheesh.github.io/Hear2Use/
+
+**My role:** Team lead. I built the prototype with IBM Bob, opened the pitch and came up with the app name and gamified features.
+
+**Final team repo:** [sedmoh/Hear2Use](https://github.com/sedmoh/Hear2Use)
+
+<p>
+  <img src="docs/scan.png" alt="Scan and Speak screen with a large Scan button" width="240">
+  <img src="docs/kitchen.png" alt="My Kitchen screen with expiry counters and saved items" width="240">
+  <img src="docs/places.png" alt="What's Around Me screen listing nearby independent shops" width="240">
+</p>
 
 ---
 
@@ -23,47 +34,11 @@
 
 ---
 
-## Quick start on your phone
+## Try it
 
-### Option A — GitHub Pages (recommended, no setup)
+Open the live link on your phone in Chrome (Android) or Safari (iOS). It works without an API key using demo data.
 
-1. Push this folder to a GitHub repository (instructions below).
-2. Go to **Settings → Pages → Source → main branch → / (root)**.
-3. GitHub will give you a URL like `https://yourname.github.io/hear2use/`.
-4. Open that URL in Chrome (Android) or Safari (iOS) on your phone.
-5. The camera will work because it is served over HTTPS.
-
-### Option B — Local server + tunnel (for testing before pushing)
-
-You need Node.js installed once. After that it's two commands.
-
-```bash
-# 1. Serve the folder locally
-npx serve hear2use
-
-# 2. In a second terminal, open a tunnel to HTTPS
-npx localtunnel --port 3000
-```
-
-`localtunnel` prints a URL like `https://xyz.loca.lt`.  
-Open that URL in your phone browser.  
-The camera needs HTTPS — `http://localhost` does NOT work on a phone.
-
-### Option C — VS Code Live Share / Live Server extension
-
-If you use VS Code, install the **Live Server** extension, right-click `index.html` and choose **Open with Live Server**. Then use localtunnel or ngrok to get HTTPS.
-
----
-
-## How to run locally on desktop (for development)
-
-```bash
-cd hear2use
-npx serve .
-# open http://localhost:3000 in Chrome
-```
-
-No build step. No npm install. `npx serve` downloads and runs serve once.
+To run it locally: `npx serve .` in this folder, then open http://localhost:3000 in Chrome. No build step.
 
 ---
 
@@ -152,146 +127,10 @@ Available on **Chrome for Android** (hold the 🎙️ button in the header, or p
 
 ---
 
-## 2-minute demo script
+## More
 
-This script is for the live demo or video recording.
-
-**Setup:** Load the app at your HTTPS URL. Go to Settings → tap "Load demo data" → switch to Kitchen so the judges can see items are already there.
-
----
-
-**[Scene 1 — Scan, 30 seconds]**
-
-> "Maya has just moved into halls and she's holding a carton of milk. She can't read the use-by date."
-
-1. Tap **Scan**.
-2. The camera opens. Point at the milk (or any food label). Tap the shutter.
-3. The app says: *"Semi-skimmed milk. 3 days left. This is a use-by date — a safety date, do not eat after this date. Store refrigerated below 5 degrees. Rinse the bottle and put it in recycling."*
-
-> "Everything Maya needs — in one sentence, spoken aloud."
-
-4. Tap **Save to my kitchen**.
-
----
-
-**[Scene 2 — Kitchen / expiry, 30 seconds]**
-
-> "A few days later, Maya wants to know what she needs to use up."
-
-1. Switch to the **Kitchen** tab.
-2. Tap **What's expiring?**
-3. The app reads out the items closest to expiry.
-
-> "No guessing. No asking a flatmate. Just the facts."
-
----
-
-**[Scene 3 — Places, 30 seconds]**
-
-> "Maya is new to the area and wants to find somewhere to shop independently."
-
-1. Switch to the **Places** tab.
-2. Tap **What's near me?**
-3. The app says: *"Here is what is near you. Grocery shops: Green Leaf Grocer, 4 minutes walk — independent…"*
-4. Tap **Next** to hear details of the first place.
-5. Tap **Details** to hear full accessibility notes.
-
-> "She can plan a route without needing sighted help."
-
----
-
-**[Scene 4 — Impact, 15 seconds]**
-
-1. Switch back to **Kitchen**.
-2. Tap **Mark used** — the counter increments.
-3. Tap **Mark recycled** — the counter increments.
-
-> "Every item used and every package recycled correctly is tracked. That is SDG 12 in action."
-
----
-
-**[Bonus — headphone navigation]**
-
-> "For a fully hands-free experience, plug in earphones and use the skip button."
-
-The skip-forward button on the headphone cable speaks the next kitchen item. Skip-back speaks the previous one.
-
----
-
-## Accessibility test checklist
-
-Run this with a screen reader before the presentation.
-
-### VoiceOver (iOS Safari)
-
-- [ ] Enable VoiceOver: **Settings → Accessibility → VoiceOver → On**
-- [ ] Open the app URL in Safari
-- [ ] Swipe right — every tab button is announced with its label and role ("tab")
-- [ ] Double-tap the Scan tab — the panel opens and VoiceOver announces "Scan and Speak, tab, selected"
-- [ ] Swipe to the Scan button — announced as "Scan, button"
-- [ ] Double-tap Scan — file picker opens or camera launches
-- [ ] After a scan result appears — VoiceOver reads the result heading and each row in the definition list
-- [ ] Swipe to "Save to my kitchen" — announced correctly, hidden when not applicable
-- [ ] Switch to Kitchen tab — impact numbers are announced
-- [ ] Tap "What's expiring?" — result spoken AND visible on screen
-- [ ] Tap "Repeat" in the header — last message re-spoken
-- [ ] Switch to Settings — all labels read, toggle switches announced as "switch, on/off"
-- [ ] Focus never gets lost or trapped at any point
-
-### TalkBack (Android Chrome)
-
-- [ ] Enable TalkBack: **Settings → Accessibility → TalkBack → On**
-- [ ] Swipe through all tab buttons — each has a label
-- [ ] Activate Scan — camera or file picker opens
-- [ ] Scan result is announced via aria-live region
-- [ ] Kitchen items are listed in logical order with urgency described in text (not colour only)
-- [ ] "What's near me?" speaks a full summary
-- [ ] Skip button on headphones speaks next kitchen item (Media Session API)
-- [ ] Loading overlay is announced when AI is running
-
-### Keyboard only (desktop Chrome)
-
-- [ ] Tab key reaches every interactive element in a logical order
-- [ ] All buttons have a visible focus ring (white outline)
-- [ ] Arrow keys move between tabs
-- [ ] Home and End jump to first/last tab
-- [ ] Enter/Space activates buttons
-- [ ] No keyboard trap anywhere
-
-### General checks
-
-- [ ] Base font size is at least 20px
-- [ ] All touch targets are at least 64px tall
-- [ ] In high-contrast mode (default), text contrast is at least 7:1
-- [ ] Urgency (expiring soon, expired) is shown in text AND colour (never colour alone)
-- [ ] Every spoken message also appears in the "Last message" bar on screen
-- [ ] Demo mode works with no API key — three results cycle: milk → letter → ready meal
-- [ ] "Load demo data" in Settings populates the Kitchen tab immediately
-- [ ] "Clear all data" resets everything and reloads
-
----
-
-## Pushing to GitHub
-
-```bash
-# From the parent folder (IBM BOB/Hackathon/)
-cd "c:\Users\johan\Downloads\IBM BOB\Hackathon"
-
-# Initialise git if not already done
-git init
-git add hear2use/
-git commit -m "feat: Hear2Use full prototype — all 4 features"
-
-# Create a repo on github.com, then:
-git remote add origin https://github.com/YOUR_USERNAME/hear2use.git
-git branch -M main
-git push -u origin main
-```
-
-Then enable GitHub Pages:  
-**Repo → Settings → Pages → Source: Deploy from branch → Branch: main → Folder: /hear2use → Save**
-
-Your live URL will be: `https://YOUR_USERNAME.github.io/hear2use/`
+- [2-minute demo script](docs/demo-script.md)
+- [Accessibility test checklist](docs/accessibility-checklist.md)
 
 ---
 
